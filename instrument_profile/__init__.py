@@ -59,7 +59,7 @@ def normalize_instrument_data(raw_data: Dict[str, Any]) -> Dict[str, Any]:
     # Example: convert date strings to datetime objects, standardize codes
     return raw_data
 
-
+'''
 def validate_instrument_data(data: Dict[str, Any]) -> bool:
     """
     Validate that the normalized instrument data meets schema requirements.
@@ -104,6 +104,33 @@ def validate_instrument_data(data: Dict[str, Any]) -> bool:
             return False
 
     return True
+'''
+
+from .schema import INSTRUMENT_SCHEMA
+
+def validate_instrument_data(data):
+    """
+    Validate that the normalized instrument data meets schema requirements.
+
+    Args:
+        data (dict): Normalized instrument data.
+
+    Returns:
+        bool: True if data passes validation, False otherwise.
+    """
+    for field, rules in INSTRUMENT_SCHEMA.items():
+        # Check required fields
+        if rules["required"] and field not in data:
+            return False
+
+        # If field is present and not None, check type
+        if field in data and data[field] is not None:
+            expected_type = rules["type"]
+            if not isinstance(data[field], expected_type):
+                return False
+
+    return True
+
 
 
 def get_instrument_profile(identifier: str, source: Optional[str] = None) -> Dict[str, Any]:

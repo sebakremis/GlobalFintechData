@@ -1,0 +1,47 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        // Python interpreter path (adjust if using a virtual environment)
+        "python.defaultInterpreterPath": "${workspaceFolder}/venv/bin/python",
+
+        // Enable linting
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": true,
+        "python.linting.pylintArgs": [
+            "--disable=C0114", // disable missing-module-docstring warning if desired
+            "--disable=C0116"  // disable missing-function-docstring warning if desired
+        ],
+
+        // Test discovery settings
+        "python.testing.unittestEnabled": true,
+        "python.testing.pytestEnabled": false,
+        "python.testing.unittestArgs": [
+            "-v",
+            "-s",
+            "./globalfintechdata", // folder containing your code
+            "-p",
+            "test_*.py"
+        ],
+
+        // Formatting
+        "editor.formatOnSave": true,
+        "[python]": {
+            "editor.defaultFormatter": "ms-python.black-formatter"
+        },
+
+        // Terminal
+        "terminal.integrated.env.windows": {
+            "PYTHONPATH": "${workspaceFolder}"
+        },
+        "terminal.integrated.env.linux": {
+            "PYTHONPATH": "${workspaceFolder}"
+        },
+        "terminal.integrated.env.osx": {
+            "PYTHONPATH": "${workspaceFolder}"
+        }
+    }
+}

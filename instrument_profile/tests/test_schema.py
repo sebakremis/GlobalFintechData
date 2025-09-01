@@ -8,8 +8,8 @@ These tests ensure that:
 """
 
 import unittest
-from globalfintechdata.instrument_profile.schema import INSTRUMENT_SCHEMA
-from globalfintechdata.instrument_profile import validate_instrument_data
+from instrument_profile.schema import INSTRUMENT_SCHEMA
+from instrument_profile import validate_instrument_data
 
 
 class TestInstrumentSchemaValidation(unittest.TestCase):

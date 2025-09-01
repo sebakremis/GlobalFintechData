@@ -70,8 +70,39 @@ def validate_instrument_data(data: Dict[str, Any]) -> bool:
     Returns:
         bool: True if data passes validation, False otherwise.
     """
-    # TODO: Check required fields, formats, and value ranges
-    # Example: ensure ISIN is 12 characters, MIC is valid, etc.
+    required_fields = {
+        "isin": str,
+        "ticker": str,
+        "issuer_name": str,
+        "issuer_country": str,
+        "instrument_type": str,
+        "mic": str,
+        "listing_date": str,
+        "currency": str,
+        "last_updated": str,
+    }
+    optional_fields = {
+        "cusip": (str, type(None)),
+        "sedol": (str, type(None)),
+        "sector": (str, type(None)),
+        "industry": (str, type(None)),
+        "cfi_code": (str, type(None)),
+        "maturity_date": (str, type(None)),
+        "dividend_policy": (str, type(None)),
+        "coupon_rate": (float, type(None)),
+        "rating": (str, type(None)),
+    }
+
+    # Check required fields
+    for field, field_type in required_fields.items():
+        if field not in data or not isinstance(data[field], field_type):
+            return False
+
+    # Check optional fields if present
+    for field, field_types in optional_fields.items():
+        if field in data and not isinstance(data[field], field_types):
+            return False
+
     return True
 
 

@@ -59,53 +59,6 @@ def normalize_instrument_data(raw_data: Dict[str, Any]) -> Dict[str, Any]:
     # Example: convert date strings to datetime objects, standardize codes
     return raw_data
 
-'''
-def validate_instrument_data(data: Dict[str, Any]) -> bool:
-    """
-    Validate that the normalized instrument data meets schema requirements.
-
-    Args:
-        data (dict): Normalized instrument data.
-
-    Returns:
-        bool: True if data passes validation, False otherwise.
-    """
-    required_fields = {
-        "isin": str,
-        "ticker": str,
-        "issuer_name": str,
-        "issuer_country": str,
-        "instrument_type": str,
-        "mic": str,
-        "listing_date": str,
-        "currency": str,
-        "last_updated": str,
-    }
-    optional_fields = {
-        "cusip": (str, type(None)),
-        "sedol": (str, type(None)),
-        "sector": (str, type(None)),
-        "industry": (str, type(None)),
-        "cfi_code": (str, type(None)),
-        "maturity_date": (str, type(None)),
-        "dividend_policy": (str, type(None)),
-        "coupon_rate": (float, type(None)),
-        "rating": (str, type(None)),
-    }
-
-    # Check required fields
-    for field, field_type in required_fields.items():
-        if field not in data or not isinstance(data[field], field_type):
-            return False
-
-    # Check optional fields if present
-    for field, field_types in optional_fields.items():
-        if field in data and not isinstance(data[field], field_types):
-            return False
-
-    return True
-'''
-
 from .schema import INSTRUMENT_SCHEMA
 
 def validate_instrument_data(data):
@@ -116,20 +69,29 @@ def validate_instrument_data(data):
         data (dict): Normalized instrument data.
 
     Returns:
-        bool: True if data passes validation, False otherwise.
+        tuple:
+            - bool: True if data passes validation, False otherwise.
+            - list: A list of error messages (empty if validation passes).
     """
+    errors = []
+
     for field, rules in INSTRUMENT_SCHEMA.items():
         # Check required fields
         if rules["required"] and field not in data:
-            return False
+            errors.append(f"Missing required field: '{field}'")
+            continue  # No need to check type if field is missing
 
         # If field is present and not None, check type
         if field in data and data[field] is not None:
             expected_type = rules["type"]
             if not isinstance(data[field], expected_type):
-                return False
+                errors.append(
+                    f"Field '{field}' has wrong type: expected {expected_type.__name__}, "
+                    f"got {type(data[field]).__name__}"
+                )
 
-    return True
+    return (len(errors) == 0, errors)
+
 
 
 

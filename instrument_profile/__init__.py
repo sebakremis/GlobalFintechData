@@ -96,18 +96,12 @@ def validate_instrument_data(data):
 
 
 def get_instrument_profile(identifier: str, source: Optional[str] = None) -> Dict[str, Any]:
-    """
-    High-level function to retrieve, normalize, and validate an instrument profile.
-
-    Args:
-        identifier (str): An instrument identifier (e.g., ISIN, ticker, CUSIP).
-        source (str, optional): Specific data source to use (if applicable).
-
-    Returns:
-        dict: Final validated instrument profile.
-    """
     raw_data = fetch_instrument_data(identifier)
     normalized_data = normalize_instrument_data(raw_data)
-    if not validate_instrument_data(normalized_data):
-        raise ValueError(f"Instrument data for {identifier} failed validation.")
+    valid, errors = validate_instrument_data(normalized_data)
+    if not valid:
+        raise ValueError(
+            f"Instrument data for {identifier} failed validation:\n" + "\n".join(errors)
+        )
     return normalized_data
+
